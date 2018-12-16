@@ -1,5 +1,5 @@
 fetch('./whatsapp-data/whatsapp.json').then((response) => {
-  return response.json()
+  return response.json();
 }).then((json) => {
   const dataByUser = sortMessagesByUser(json.data);
   renderDoughtnut(dataByUser);
@@ -15,7 +15,6 @@ const sortMessagesByUser = data => {
       dataByUser[message.user].push(message);
     }
   });
-  console.log(dataByUser)
   return dataByUser;
 };
 
