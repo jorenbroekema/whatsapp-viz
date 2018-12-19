@@ -1,3 +1,5 @@
 node_modules
 whatsapp-data/*.json
 !whatsapp-data/example.json
+whatsapp-data/*.txt
+!whatsapp-data/example.txt
