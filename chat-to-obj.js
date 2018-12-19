@@ -41,12 +41,12 @@ const init = () => {
     let obj = {};
     systemMessage = false;
 
-    var { date, lineRemaining } = getDate(line);
-    obj.date = date;
+    const dateAndLineRemaining = getDate(line);
+    obj.date = dateAndLineRemaining.date;
 
-    var { user, lineRemaining } = getUser(lineRemaining);
-    obj.user = user;
-    obj.message = lineRemaining;
+    const userAndLineRemaining = getUser(dateAndLineRemaining.lineRemaining);
+    obj.user = userAndLineRemaining.user;
+    obj.message = userAndLineRemaining.lineRemaining;
     
     if (!noType) {
       obj.type = systemMessage ? 'action' : 'message';
