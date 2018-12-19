@@ -23,7 +23,7 @@ if (file) {
 const init = () => {
   let arr = [];
   txtData.split('\n').forEach((potentialNewMessage) => {
-    if (!potentialNewMessage.match(/^((\d){1,2}\/){2}(\d){1,4}/g)){
+    if (!potentialNewMessage.match(/^((\d){1,2}\/){2}(\d){2,4}/g)){
       arr[arr.length - 1] += ('\n' + potentialNewMessage);
     } else {
       arr.push(potentialNewMessage);
@@ -66,7 +66,7 @@ const init = () => {
 };
 
 const getDate = (line) => {
-  var result = line.match(/^(\d{1,2})\/(\d{1,2})\/(\d{1,4}), (\d{1,2}):(\d{1,2})/);
+  let result = line.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4}), (\d{1,2}):(\d{1,2})/);
   if (result.length != 6) {   // Entire match, 1st group, ..., 5th group.
     let date = null;
     return { date, line };
@@ -90,7 +90,7 @@ const getDate = (line) => {
 
 const getUser = (line) => {
   line = line.slice(3); // Remove leading " - ".
-  let endIndex = line.search(/(:|left|created|changed|was|were)/);
+  let endIndex = line.search(/(:| left| created| changed| was| were)/);
   if (endIndex >= 0) {
     systemMessage = true;
     let rawUser = line.slice(0, endIndex);

@@ -1,4 +1,4 @@
-fetch('./whatsapp-data/WhatsApp Chat with YC HEROES.json').then((response) => {
+fetch('./whatsapp-data/example.json').then((response) => {
   return response.json();
 }).then((json) => {
   const dataByUser = sortMessagesByUser(json.data);

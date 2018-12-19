@@ -11,7 +11,7 @@ From the root folder, convert it to .json data by executing the following comman
 node chat-to-obj.js "whatsapp-data/[filename].txt" "[your name]"
 ```
 
-Open main.js in a text editor and make sure that the filename used in the fetch matches the filename of your WhatsApp data. The default filename is `whatsapp.json`.
+Open main.js in a text editor and make sure that the filename used in the fetch matches the filename of your WhatsApp data. The default filename is `example.json`.
 
 Run the web server by executing the following command with Git Bash:
 ```sh
