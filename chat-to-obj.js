@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs');
-const currentUser = 'Joren';
 const file = process.argv[2];
+const currentUser = process.argv[3];
 const flags = process.argv.slice(2);
 const omitMedia = flags.indexOf('-o') >= 0;
 const noType = flags.indexOf('-t') >= 0;
@@ -20,42 +20,10 @@ if (file) {
   });
 }
 
-const getDate = (dateStr) => {
-
-  if (!/\d/.test(dateStr[0])) {
-    return null;
-  }
-
-  let year = dateStr.slice(6, 10);
-  let month = parseInt(dateStr.slice(3,5));
-  let day = dateStr.slice(0, 2);
-  let hour = dateStr.slice(12, 14);
-  let min = dateStr.slice(15, 17);
-  let sec = dateStr.slice(19);
-
-  return new Date(year, month, day, hour, min, sec);
-};
-
-const getUser = (userStr) => {
-  let endIndex = userStr.indexOf(':');
-  if (endIndex >= 0) {
-    return userStr.slice(0, endIndex);
-  } else {
-    endIndex = userStr.search(/\s(left|created|changed|was|were)/);
-    if (endIndex >= 0) {
-      systemMessage = true;
-      let user = userStr.slice(0, endIndex);
-      return user === 'You' ? currentUser : user;
-    } else {
-      return null;
-    }
-  }
-};
-
 const init = () => {
   let arr = [];
   txtData.split('\n').forEach((potentialNewMessage) => {
-    if (!potentialNewMessage.match(/^((\d){2}\/){2}(\d){4}/g)){
+    if (!potentialNewMessage.match(/^((\d){1,2}\/){2}(\d){1,4}/g)){
       arr[arr.length - 1] += ('\n' + potentialNewMessage);
     } else {
       arr.push(potentialNewMessage);
@@ -65,7 +33,6 @@ const init = () => {
   let jsonData = { data: [] };
 
   for (let i = 0, len = arr.length; i < len; i ++) {
-
     let line = arr[i].trim();
     if (!line.length || (omitMedia && (line.indexOf(' omitted>') >= 0))) {
       continue;
@@ -74,14 +41,12 @@ const init = () => {
     let obj = {};
     systemMessage = false;
 
-    obj.date = getDate(line.slice(0, 17));
-    obj.user = getUser(line.slice(20));
-    
-    if (!systemMessage && !obj.user){
-      obj.message = line.slice(20);
-    } else {
-      obj.message = systemMessage ? line.slice(20) : line.slice(22 + obj.user.length);
-    }
+    var { date, lineRemaining } = getDate(line);
+    obj.date = date;
+
+    var { user, lineRemaining } = getUser(lineRemaining);
+    obj.user = user;
+    obj.message = lineRemaining;
     
     if (!noType) {
       obj.type = systemMessage ? 'action' : 'message';
@@ -98,4 +63,48 @@ const init = () => {
     }
     console.log(`Written to ${jsonUrl}`);
   })
+};
+
+const getDate = (line) => {
+  var result = line.match(/^(\d{1,2})\/(\d{1,2})\/(\d{1,4}), (\d{1,2}):(\d{1,2})/);
+  if (result.length != 6) {   // Entire match, 1st group, ..., 5th group.
+    let date = null;
+    return { date, line };
+  }
+
+  // Note the order: Month, Day, Year, Hour, Second. America.
+  let year = (result[3].length == 4) ? parseInt(result[3]) : parseInt(result[3]) + 2000;
+  let month = parseInt(result[1]) - 1;  // -1 because the months of js Date are 0-based.
+  let day = parseInt(result[2]);
+  let hour = parseInt(result[4]);
+  let min = parseInt(result[5]);
+  let sec = 0;
+
+  let matchLength = result[0].length;
+  let lineRemaining = line.slice(matchLength);
+
+  let date = new Date(year, month, day, hour, min, sec);
+
+  return { date, lineRemaining };
+};
+
+const getUser = (line) => {
+  line = line.slice(3); // Remove leading " - ".
+  let endIndex = line.search(/(:|left|created|changed|was|were)/);
+  if (endIndex >= 0) {
+    systemMessage = true;
+    let rawUser = line.slice(0, endIndex);
+    let user = (rawUser === 'You') ? currentUser : rawUser;
+    
+    user = user.replace('\u202A', '');    // Remove annoying unicode reversing character.
+    user = user.replace('\u202C', '');    // Remove annoying unicode directional character.
+
+    let lineRemaining = line.slice(endIndex);
+    if (lineRemaining[0] === ':') lineRemaining = lineRemaining.slice(2); // Remove leading colon and space from message, if necessary.
+    
+    return { user, lineRemaining }
+  } else {
+    let user = null;
+    return { user, line };
+  }
 };
