@@ -8,8 +8,9 @@ Download your WhatsApp data following the guide that should be in the same folde
 
 From the root folder, convert it to .json data by executing the following command with Git Bash:
 ```sh
-node chat-to-obj.js "whatsapp-data/[filename].txt" "[your name]"
+node chat-to-obj.js "whatsapp-data/[filename].txt" "[your name]" "[date format]"
 ```
+Your name and the date format are optional, and default to "You" and "MM/dd/yyyy, hh:mm". If your phone's language is not set to Dutch, you might have to provide a different date format.
 
 Open main.js in a text editor and make sure that the filename used in the fetch matches the filename of your WhatsApp data. The default filename is `example.json`.
 
