@@ -1,22 +1,23 @@
 fetch('./whatsapp-data/WhatsApp Chat with YC HEROES.json').then((response) => {
+//fetch('https://raw.githubusercontent.com/jorenbroekema/whatsapp-viz/feature/robustification/whatsapp-data/example.json').then((response) => {
   return response.json();
 }).then((json) => {
-  const dataByUser = sortMessagesByUser(json.data);
+  const messagesByUser = groupMessagesByUser(json.data);
   //renderDoughnut(dataByUser);
-  renderTreemap(dataByUser);
+  renderTreemap(messagesByUser);
 });
 
-const sortMessagesByUser = data => {
-  let dataByUser = {};
-  data.forEach((message) => {
+const groupMessagesByUser = messages => {
+  let messagesByUser = {};
+  messages.forEach((message) => {
     if (message.user !== null) {
-      if (!dataByUser[message.user]) {
-        dataByUser[message.user] = [];
+      if (!messagesByUser[message.user]) {
+        messagesByUser[message.user] = [];
       }
-      dataByUser[message.user].push(message);
+      messagesByUser[message.user].push(message);
     }
   });
-  return dataByUser;
+  return messagesByUser;
 };
 
 const renderDoughnut = (data) => {
@@ -59,24 +60,24 @@ const renderDoughnut = (data) => {
   });
 }
 
-const renderTreemap = (data) => {
+const renderTreemap = messagesByUser => {
   // Put the data into the right form for a treemap:
   let series = [];
-  Object.keys(data).forEach(function(key) {
+  Object.keys(messagesByUser).forEach(function(user) {
     series.push(
       {
-        "text": key + " " + data[key].length,
-        "value": data[key].length
+        "text": user + " " + messagesByUser[user].length,
+        "value": messagesByUser[user].length
       }
     )
   })
   console.log(JSON.stringify(series));
 
   // Set some random (but distributed) colors:
-  let nUsers = Object.keys(data).length;
+  let nUsers = Object.keys(messagesByUser).length;
   let n = Math.ceil(Math.pow(nUsers, 0.333333));
   let palette = [];
-  Object.keys(data).forEach((user, index) => {
+  Object.keys(messagesByUser).forEach((user, index) => {
     function componentToHex(c) {
         var hex = c.toString(16);
         return hex.length == 1 ? '0' + hex : hex;
