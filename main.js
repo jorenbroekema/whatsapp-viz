@@ -1,4 +1,4 @@
-fetch('./whatsapp-data/example.json').then((response) => {
+fetch('./whatsapp-data/WhatsApp Chat with YC HEROES.json').then((response) => {
   return response.json();
 }).then((json) => {
   const dataByUser = sortMessagesByUser(json.data);
@@ -70,6 +70,7 @@ const renderTreemap = (data) => {
       }
     )
   })
+  console.log(JSON.stringify(series));
 
   // Set some random (but distributed) colors:
   let nUsers = Object.keys(data).length;
@@ -88,7 +89,6 @@ const renderTreemap = (data) => {
     let b = Math.floor(((index % n) * (255 - bBias)) / n) + bBias;
 
     let hex = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-    console.log(hex);
     palette.push(hex);
   })
 
@@ -98,8 +98,9 @@ const renderTreemap = (data) => {
        margin:"40 0 0 0"
     },
     "options":{
-      "aspect-type":"palette",
-      "palette":palette
+      "aspect-type": "palette",
+      "palette": palette,
+      "split-type" : "balanced"
     },
     type: 'treemap',
     title: {
@@ -112,6 +113,6 @@ const renderTreemap = (data) => {
   zingchart.render({
     id: 'chartDiv',
     data: chartData,
-    height: 950,
+    height: "950"
   });
 }
