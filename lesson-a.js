@@ -1,45 +1,19 @@
-fetch('./whatsapp-data/WhatsApp Chat with YC HEROES.json')
-  .then(response => response.json())
-  .then(json => {
-    const messagesByUser = groupMessagesByUser(json.data);
-    renderTreemap(messagesByUser);
-  });
+let userAndMessageCountList = [
+  { "text": "Annabel 15", "value": 15, "font-size": "40px" },
+  { "text": "Bobby 23", "value": 23 },
+  { "text": "Cornelis 5", "value": 5 },
+  { "text": "Dirk-Jan 10", "value": 10 },
+  { "text": "Evelien 34", "value": 34 },
+  { "text": "Fabio 12", "value": 12 },
+];
 
-const groupMessagesByUser = messages => {
-  let messagesByUser = {};
-  messages.forEach(message => {
-    const user = message.user;
-    if (user !== null) {
-      if (!messagesByUser[user]) {
-        messagesByUser[user] = [];
-      }
-      messagesByUser[user].push(message);
-    }
-  });
-  return messagesByUser;
-};
-
-const renderTreemap = messagesByUser => {
-  // Put the data into the right form for a treemap:
-  let userAndMessageCountList = [];
-  const users = Object.keys(messagesByUser);
-  users.forEach(user => {
-    const messages = messagesByUser[user];
-    const messageCount = messages.length;
-    userAndMessageCountList.push(
-      {
-        "text": user + " " + messageCount,
-        "value": messageCount
-      }
-    )
-  })
-
+function renderTreemap(userAndMessageCountList) {
   // Define the chart:
   const chartData = {
     plotarea: {
         margin:"40 0 0 0"
     },
-    "options":{
+    options:{
       "split-type" : "balanced"
     },
     type: 'treemap',
@@ -48,11 +22,14 @@ const renderTreemap = messagesByUser => {
     },
     series: userAndMessageCountList
   };
-
+  
   // Render:
+  zingchart.FONTSIZE = 40;
   zingchart.render({
     id: 'chartDiv',
     data: chartData,
     height: "950"
   });
 }
+
+renderTreemap(userAndMessageCountList);
