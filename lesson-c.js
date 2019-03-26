@@ -1,20 +1,47 @@
-let messagesByUser = {
-  "Annabel" : [
-    {user: "Annabel", message: "Hoi! :)"},
-    {user: "Annabel", message: "Ik ben Annabel"},
-    {user: "Annabel", message: "Nou dan niet hoor"}
-  ],
-  "Bobby" : [
-    {user: "Bobby", message: "Wees eens still Annabel"},
-    {user: "Bobby", message: "We proberen hier te programmeren"}
-  ],
-  "Cornelis" : [
-    {user: "Cornelis", message: "Hoi Annabel"}
-  ]
-};
+let data = [
+  {
+    "date":"2013-04-26T14:12:00.000Z",
+    "user":"Nick",
+    "message":" created group \"Team 15\"",
+    "type":"action"
+  },
+  {
+    "date":"2013-04-26T14:12:00.000Z",
+    "user":"John Doe",
+    "message":" were added",
+    "type":"action"
+  },
+  {
+    "date":"2015-12-29T20:07:00.000Z",
+    "user":"Jack",
+    "message":"Welcome!",
+    "type":"action"
+  },
+  {
+    "date":"2015-12-29T20:08:00.000Z",
+    "user":"John Doe",
+    "message":"Thanks! :)",
+    "type":"action"
+  }
+];
 
+const messagesByUser = groupMessagesByUser(data);
 const userAndMessageCountList = messagesByUserToUserAndMessageCountList(messagesByUser);
 renderTreemap(userAndMessageCountList);
+
+function groupMessagesByUser(messages) {
+  let messagesByUser = {};
+  messages.forEach(message => {
+    const user = message.user;
+    if (user !== null) {
+      if (!messagesByUser[user]) {
+        messagesByUser[user] = [];
+      }
+      messagesByUser[user].push(message);
+    }
+  });
+  return messagesByUser;
+}
 
 function messagesByUserToUserAndMessageCountList(messagesByUser) {
   // Put the data into the right form for a treemap:
@@ -50,7 +77,7 @@ function renderTreemap(userAndMessageCountList) {
   };
 
   // Render:
-  zingchart.FONTSIZE = 30;
+  zingchart.FONTSIZE = 11;
   zingchart.render({
     id: 'chartDiv',
     data: chartData,

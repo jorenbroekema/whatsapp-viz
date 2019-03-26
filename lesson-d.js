@@ -1,20 +1,24 @@
-let messagesByUser = {
-  "Annabel" : [
-    {user: "Annabel", message: "Hoi! :)"},
-    {user: "Annabel", message: "Ik ben Annabel"},
-    {user: "Annabel", message: "Nou dan niet hoor"}
-  ],
-  "Bobby" : [
-    {user: "Bobby", message: "Wees eens still Annabel"},
-    {user: "Bobby", message: "We proberen hier te programmeren"}
-  ],
-  "Cornelis" : [
-    {user: "Cornelis", message: "Hoi Annabel"}
-  ]
-};
+fetch('./whatsapp-data/WhatsApp Chat with YC HEROES.json')
+  .then(response => response.json())
+  .then(json => {
+    const messagesByUser = groupMessagesByUser(json.data);
+    const userAndMessageCountList = messagesByUserToUserAndMessageCountList(messagesByUser);
+    renderTreemap(userAndMessageCountList);
+  });
 
-const userAndMessageCountList = messagesByUserToUserAndMessageCountList(messagesByUser);
-renderTreemap(userAndMessageCountList);
+function groupMessagesByUser(messages) {
+  let messagesByUser = {};
+  messages.forEach(message => {
+    const user = message.user;
+    if (user !== null) {
+      if (!messagesByUser[user]) {
+        messagesByUser[user] = [];
+      }
+      messagesByUser[user].push(message);
+    }
+  });
+  return messagesByUser;
+}
 
 function messagesByUserToUserAndMessageCountList(messagesByUser) {
   // Put the data into the right form for a treemap:
@@ -50,7 +54,7 @@ function renderTreemap(userAndMessageCountList) {
   };
 
   // Render:
-  zingchart.FONTSIZE = 30;
+  zingchart.FONTSIZE = 11;
   zingchart.render({
     id: 'chartDiv',
     data: chartData,
