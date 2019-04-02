@@ -26,7 +26,7 @@ let data = [
 ];
 
 const messagesByUser = groupMessagesByUser(data);
-const userAndMessageCountList = messagesByUserToUserAndMessageCountList(messagesByUser);
+const userAndMessageCountList = messagesByUserToMessageCounts(messagesByUser);
 renderTreemap(userAndMessageCountList);
 
 function groupMessagesByUser(messages) {
@@ -43,7 +43,7 @@ function groupMessagesByUser(messages) {
   return messagesByUser;
 }
 
-function messagesByUserToUserAndMessageCountList(messagesByUser) {
+function messagesByUserToMessageCounts(messagesByUser) {
   // Put the data into the right form for a treemap:
   let userAndMessageCountList = [];
   const users = Object.keys(messagesByUser);

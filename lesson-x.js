@@ -7,34 +7,20 @@ fetch('./whatsapp-data/WhatsApp Chat with YC HEROES.json')
   });
 
 function groupMessagesByUser(messages) {
-  let messagesByUser = {};
-  messages.forEach(message => {
-    const user = message.user;
-    if (user !== null) {
-      if (!messagesByUser[user]) {
-        messagesByUser[user] = [];
-      }
-      messagesByUser[user].push(message);
-    }
-  });
-  return messagesByUser;
+  return messages.reduce((messagesByUser, message) => {
+    (messagesByUser[message.user] = messagesByUser[message.user] || []).push(message);
+    return messagesByUser;
+  }, {});
 }
 
 function messagesByUserToMessageCounts(messagesByUser) {
   // Put the data into the right form for a treemap:
-  let userAndMessageCountList = [];
-  const users = Object.keys(messagesByUser);
-  users.forEach(user => {
-    const messages = messagesByUser[user];
-    const messageCount = messages.length;
-    userAndMessageCountList.push(
-      {
-        "text": user + " " + messageCount,
-        "value": messageCount
-      }
-    )
-  })
-  return userAndMessageCountList;
+  return Object.keys(messagesByUser).map(user => {
+    return {
+      "text": user + " " + messagesByUser[user].length,
+      "value": messagesByUser[user].length
+    }
+  });
 }
 
 function renderTreemap(userAndMessageCountList) {

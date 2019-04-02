@@ -111,6 +111,7 @@ const renderTreemap = messagesByUser => {
   };
 
   // Render:
+  zingchart.FONTSIZE = 15;
   zingchart.render({
     id: 'chartDiv',
     data: chartData,
