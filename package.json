@@ -10,7 +10,7 @@
     "http-server": "^0.12.1"
   },
   "dependencies": {
-    "chart.js": "^2.7.3"
+    "chart.js": "^2.9.4"
   },
   "author": "Joren Broekema",
   "license": "ISC"
